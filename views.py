@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import asyncio
 import jsonschema
 from flask import jsonify, g, request
 from flask.views import MethodView
@@ -9,10 +8,10 @@ from flask_httpauth import HTTPBasicAuth
 from passlib.apps import custom_app_context as pwd_context
 
 from models import User, Advertisement
-from new_app import db, app, celery
+from new_app import db, app
+from selery_email import send_mail, celery
 from error import msg_response
 from schema import NEW_USER, NEW_THING
-from email_sender import mail
 
 
 @app.route('/health/', methods=['GET'])
@@ -51,13 +50,14 @@ class UserView(MethodView):
             jsonschema.validate(request.json, NEW_USER)
             user_name = request.json['user_name']
             password = request.json['password']
+            email = request.json['email']
             self.hash_password(password)
             if user_name is None or password is None:
                 return msg_response(msg='user name or password is none')
             user = User.query.filter_by(username=user_name).first()
             if user is not None:
                 return msg_response(msg='user exist')
-            user = User(username=user_name)
+            user = User(username=user_name, email=email)
             user.hash_password(password)
             db.session.add(user)
             db.session.commit()
@@ -70,6 +70,7 @@ class UserView(MethodView):
 
 class AdvertisementView(MethodView):
     auth = HTTPBasicAuth()
+
     @auth.verify_password
     def verify_password(self, user_name, password):
         user = User.query.filter_by(username=user_name).first()
@@ -169,11 +170,6 @@ class AdvertisementView(MethodView):
             return msg_response(error=er.message)
 
 
-@celery.task()
-def send_mail(text='this is email'):
-    return asyncio.run(mail())
-
-
 class EmileSender(MethodView):
     def get(self, task_id):
         task = AsyncResult(task_id, app=celery)
@@ -188,11 +184,12 @@ class EmileSender(MethodView):
 app.add_url_rule('/new_user/', view_func=UserView.as_view('new_user'), methods=['POST'])
 app.add_url_rule('/get_use/<user_id>', view_func=UserView.as_view('get_user'), methods=['GET'])
 
-app.add_url_rule('/adv_new/', view_func=AdvertisementView.as_view('adv_new'), methods=['POST'])
+app.add_url_rule('/adv/new/', view_func=AdvertisementView.as_view('adv_new'), methods=['POST'])
 app.add_url_rule('/adv/<adv_id>', view_func=AdvertisementView.as_view('get_adv_id'), methods=['GET'])
 app.add_url_rule('/adv/', view_func=AdvertisementView.as_view('get_adv'), methods=['GET'])
-app.add_url_rule('/adv_del/<adv_id>', view_func=AdvertisementView.as_view('del_adv'), methods=['DELETE'])
-app.add_url_rule('/adv_patch/<adv_id>', view_func=AdvertisementView.as_view('patch_adv'), methods=['PATCH'])
+app.add_url_rule('/adv/del/<adv_id>', view_func=AdvertisementView.as_view('del_adv'), methods=['DELETE'])
+app.add_url_rule('/adv/patch/<adv_id>', view_func=AdvertisementView.as_view('patch_adv'), methods=['PATCH'])
 
-
-app.add_url_rule()
+email_view = EmileSender.as_view('email')
+app.add_url_rule('/email/task/<task_id>', view_func=email_view, methods=['GET'])
+app.add_url_rule('/email/send/', view_func=email_view, methods=['POST'])

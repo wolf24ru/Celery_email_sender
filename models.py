@@ -20,7 +20,7 @@ class User(db.Model):
         return {
             'user_id': self.id,
             'user_name': self.username,
-            'email':self.email,
+            'email': self.email,
             # TODO нормальное подключение и отображение
             'advertisements': self.advertisements
         }

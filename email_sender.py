@@ -12,14 +12,14 @@ def gen_emile_list():
         yield person
 
 
-async def send_email(email, text):
+async def send_email(email, text='next msg'):
     message = EmailMessage()
     message["From"] = "root@localhost"
     message["To"] = email
     message["Subject"] = 'New msg'
     message.set_content(text)
 
-    await aiosmtplib.send(message, hostname="localhost", port=1025)
+    await aiosmtplib.send(message, hostname="localhost", port=1020)
 
 
 async def mail():

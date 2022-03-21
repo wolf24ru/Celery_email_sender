@@ -13,5 +13,6 @@ services:
       POSTGRES_USER: celery
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: celery_sender
+
     ports:
-      - 5432:5432
+      - 5430:5432

@@ -1,23 +1,26 @@
 import requests
+from time import sleep
 URL = 'http://127.0.0.1:8000/'
 
 # create new user
-# response = requests.get(f'{URL}health')
-# print(response)
+response = requests.get(f'{URL}health')
+print(response)
+
 # if response.status_code == 200:
 #     for user_num in range(1, 4):
 #         response = requests.post(f'{URL}new_user',
 #                                  json={
 #                                      'user_name': f'user_{user_num}',
-#                                      'password': '12333Sdf545sdf'
+#                                      'password': '12333Sdf545sdf',
+#                                      'email': f'ps_{user_num}@atfd.com'
 #                                  })
 #         print(f'create:\n {response.json()}')
 
 
 # get user fo id
-get_user = requests.get(f'{URL}get_use/1')
-print(get_user)
-print(f'get_user: {get_user.json()}')
+# get_user = requests.get(f'{URL}get_use/1')
+# print(get_user)
+# print(f'get_user: {get_user.json()}')
 
 # create advertisement
 # create_advertisement = requests.post(f'{URL}adv_new',
@@ -31,16 +34,16 @@ print(f'get_user: {get_user.json()}')
 # print(create_advertisement)
 # print(create_advertisement.json())
 
-get_advertisement_all = requests.get(f'{URL}adv')
-print('\n____get_advertisement_all____')
-print(get_advertisement_all)
-print(get_advertisement_all.json())
-
-
-get_advertisement_1 = requests.get(f'{URL}adv/1')
-print('\n____get_advertisement_1____')
-print(get_advertisement_1)
-print(get_advertisement_1.json())
+# get_advertisement_all = requests.get(f'{URL}adv')
+# print('\n____get_advertisement_all____')
+# print(get_advertisement_all)
+# print(get_advertisement_all.json())
+#
+#
+# get_advertisement_1 = requests.get(f'{URL}adv/1')
+# print('\n____get_advertisement_1____')
+# print(get_advertisement_1)
+# print(get_advertisement_1.json())
 
 #
 # del_advertisement_1 = requests.delete(f'{URL}adv_del/1', json={
@@ -51,12 +54,32 @@ print(get_advertisement_1.json())
 # print(del_advertisement_1)
 # print(del_advertisement_1.json())
 
-patch_advertisement_2 = requests.patch(f'{URL}adv_patch/1',
-                                       json={
-                                           'user_name': f'user_3',
-                                           'password': '12333Sdf545sdf',
-                                           'title': '4rfff'
-                                       })
-print('\n____get_advertisement_1____')
-print(patch_advertisement_2)
-print(patch_advertisement_2.json())
+# patch_advertisement_2 = requests.patch(f'{URL}adv_patch/1',
+#                                        json={
+#                                            'user_name': f'user_3',
+#                                            'password': '12333Sdf545sdf',
+#                                            'title': '4rfff'
+#                                        })
+# print('\n____get_advertisement_1____')
+# print(patch_advertisement_2)
+# print(patch_advertisement_2.json())
+
+# sen mail
+# sen_mail = requests.post(f'{URL}email/send')
+# print('\n____send mail____')
+# print(sen_mail)
+# mail_json = sen_mail.json()
+# print(mail_json)
+# task_id = mail_json['task']
+#
+# print('\n____get mail____')
+# task = requests.get(f'{URL}email/task/{task_id}')
+# print(task)
+# p = True
+# while p:
+#     task = requests.get(f'{URL}email/task/{task_id}')
+#     status = task.json()
+#     print(status)
+#     if status['status'] == 'SUCCESS':
+#         p = False
+#     sleep(10)
