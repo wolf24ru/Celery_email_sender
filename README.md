@@ -5,6 +5,11 @@
 - асинхронная отправка сообщений;
 - celery 
 
+### Команда для запуска БД и Redis
+```shell
+docker-compose up
+```
+
 ### Команда для запуска дебага smtp сервера
 ```shell
 python -m smtpd -n -c DebuggingServer localhost:1025
